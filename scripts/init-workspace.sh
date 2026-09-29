@@ -24,9 +24,12 @@ rosdep update
 rosdep install --from-paths src --ignore-src -y
 
 # Build. colcon reprend là où il s'était arrêté si une passe a échoué.
-# Cap RAM ~2 Go/job sur les grosses TUs Gazebo : limiter les workers.
+# Cap RAM ~2 Go/job sur les grosses TUs Gazebo : défaut min(cœurs, RAM / 2 Go).
+jobs=$(awk '/MemTotal/ {print int($2 / 2097152)}' /proc/meminfo)
+(( jobs > $(nproc) )) && jobs=$(nproc)
+(( jobs < 1 )) && jobs=1
 colcon build --packages-up-to ardupilot_gz_bringup \
-  --parallel-workers "${COLCON_JOBS:-4}"
+  --parallel-workers "${COLCON_JOBS:-$jobs}"
 
 # Marqueur dans le layer du container (PAS le volume) : il disparaît au recreate,
 # exactement comme les debs rosdep — les cibles sim/sitl s'en servent en préflight.
@@ -34,5 +37,4 @@ sudo touch /var/lib/init-workspace-done
 
 echo
 echo "Workspace prêt."
-echo "Si le build a échoué (réseau), relance 'make init' : colcon reprend où il en était."
-echo "Prochaine étape : 'make sim'."
+echo "Si le build a échoué (réseau), relance la même commande : colcon reprend où il en était."

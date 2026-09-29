@@ -229,9 +229,9 @@ colcon build --packages-up-to ardupilot_sitl
 source install/setup.bash
 ```
 
-> **PIÈGE — version du code sur la page** : la page a deux variantes (ArduPilot 4.5 / ArduPilot 4.6+). Malgré le bandeau "4.6 and later", c'est la **variante 4.5 (celle avec l'argument `refs:=...dds_xrce_profile.xml`)** qui a fonctionné lors de l'installation de référence. La variante 4.6+ omet `refs`. Si le launch échoue sans `refs`, remettre l'argument.
+> **PIÈGE — version du code sur la page** : la page a deux variantes (ArduPilot 4.5 / ArduPilot 4.6+). Sur ArduPilot ≥ 4.6 (dont `master` 4.8-dev), utiliser la **variante 4.6+, sans `refs`** : le fichier `dds_xrce_profile.xml` n'existe plus (les entités DDS sont créées par le firmware) et le passer fait mourir l'agent micro-ROS (`reference file ... does not exist`). Vérifié le 2026-09-29 sur `master` : session établie, 18 topics `/ap/*`.
 
-Launch SITL avec DDS sur UDP (variante complète, avec `refs`) :
+Launch SITL avec DDS sur UDP :
 
 ```bash
 source /opt/ros/humble/setup.bash
@@ -239,7 +239,6 @@ cd ~/ardu_ws/
 source install/setup.bash
 ros2 launch ardupilot_sitl sitl_dds_udp.launch.py \
 transport:=udp4 \
-refs:=$(ros2 pkg prefix ardupilot_sitl)/share/ardupilot_sitl/config/dds_xrce_profile.xml \
 synthetic_clock:=True \
 wipe:=False \
 model:=quad \
@@ -344,7 +343,7 @@ Quasi identique au Linux natif une fois Ubuntu 22.04 installé dans WSL2. Diffé
 3. **Valider chaque étape avec son exemple** : SITL seul (§1), talker/listener (§2), `gz sim shapes.sdf` (§3), `microxrceddsgen -help` + colcon test (§4), `ros2 node list` → `/ap` (§5), iris_runway (§6).
 4. **Inspecter le bashrc après chaque ajout** : lignes exactes, pas de doublons, `$PATH` vs `$PWD` bien résolus. Lignes attendues à la fin : `source /opt/ros/humble/setup.bash`, `export GZ_VERSION=harmonic`, `export PATH=$PATH:<...>/Micro-XRCE-DDS-Gen/scripts`.
 5. **Gros build colcon qui fail** : relancer la même commande (réseau). Lire `log/latest_build/` si ça persiste.
-6. **ros2-sitl : utiliser la variante 4.5 (avec `refs:=`)** si la variante 4.6+ ne connecte pas le DDS.
+6. **ros2-sitl : variante 4.6+, SANS `refs:=`** — `dds_xrce_profile.xml` n'existe plus sur ArduPilot ≥ 4.6 ; le passer tue l'agent micro-ROS.
 7. **Gazebo Harmonic, pas Garden** : `gz-harmonic` + `GZ_VERSION=harmonic`.
 8. **Ne jamais sourcer le workspace ET oublier /opt/ros/humble** : ordre = ROS d'abord (`/opt/ros/humble/setup.bash`, via bashrc), workspace ensuite (`source ~/ardu_ws/install/setup.bash` dans chaque terminal de travail).
 

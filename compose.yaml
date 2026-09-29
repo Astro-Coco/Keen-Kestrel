@@ -1,7 +1,12 @@
 name: keen-kestrel
 services:
   sim:
-    build: { context: ., dockerfile: docker/Dockerfile }
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:                 # uid/gid de l'hôte (exportés par make) : droits X11 et fichiers alignés
+        UID: ${HOST_UID:-1000}
+        GID: ${HOST_GID:-1000}
     image: keen-kestrel
     network_mode: host      # ports MAVLink + DDS loopback partagés avec l'hôte/mavros
     ipc: host               # shared memory DDS cross-container
@@ -13,6 +18,9 @@ services:
     environment:
       - DISPLAY
       - GZ_VERSION=harmonic
+      # Empreinte de .env (calculée par make) : compose ne voit pas les changements de
+      # contenu d'un env_file ; cette variable force la recréation quand .env change.
+      - KK_ENV_HASH=${KK_ENV_HASH:-}
     volumes:
       - ardu_ws:/ardu_ws
       - ./config:/ardu_ws/config:ro   # sim.parm éditable sur l'hôte, lu au boot du SITL

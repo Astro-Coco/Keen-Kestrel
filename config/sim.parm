@@ -13,6 +13,6 @@
 #SIM_WIND_DIR    90       # direction du vent (deg)
 #SIM_RC_FAIL     0        # simuler une perte RC (1 = failsafe)
 BATT_CAPACITY   5000     # capacité batterie simulée (mAh)
-#SYSID_THISMAV   1        # system id MAVLink
+#MAV_SYSID       1        # system id MAVLink (ex-SYSID_THISMAV, renommé en 4.8)
 #DDS_DOMAIN_ID   0        # domaine DDS des topics /ap (== ROS_DOMAIN_ID du .env)
 #EK3_GPS_CHECK   0        # relâcher les checks GPS (démarrage plus rapide)
