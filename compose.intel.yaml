@@ -1,0 +1,9 @@
+services:
+  sim:
+    devices:
+      - /dev/dri:/dev/dri
+    # RENDER_GID : gid du groupe "render" sur l'hôte (getent group render). Sans le bon
+    # gid, l'utilisateur dev du conteneur n'a pas les droits sur /dev/dri/renderD*.
+    group_add:
+      - video
+      - "${RENDER_GID:-992}"

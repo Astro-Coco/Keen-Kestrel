@@ -1,0 +1,5 @@
+.env
+log/
+*.tlog*
+eeprom.bin
+*.parm.bak

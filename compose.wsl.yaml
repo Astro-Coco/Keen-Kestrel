@@ -1,0 +1,14 @@
+# Docker natif installé dans la distro WSL requis (pas Docker Desktop) : le "host
+# network" de Docker Desktop est celui de la VM utilitaire Windows, pas le loopback
+# de la distro, ce qui casse network_mode: host pour MAVLink/DDS.
+services:
+  sim:
+    volumes:
+      - /mnt/wslg:/mnt/wslg
+      - /mnt/wslg/.X11-unix:/tmp/.X11-unix
+      - /usr/lib/wsl:/usr/lib/wsl:ro
+    devices:
+      - /dev/dxg
+    environment:
+      - LD_LIBRARY_PATH=/usr/lib/wsl/lib
+      - WAYLAND_DISPLAY

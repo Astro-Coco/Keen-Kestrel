@@ -1,0 +1,23 @@
+name: keen-kestrel
+services:
+  sim:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    image: keen-kestrel
+    network_mode: host      # ports MAVLink + DDS loopback partagés avec l'hôte/mavros
+    ipc: host               # shared memory DDS cross-container
+    stdin_open: true
+    tty: true
+    # env_file (pas d'interpolation ${...}) : .env est la source de vérité pour le DDS.
+    # Un export ROS_* du shell hôte ne fuit ainsi jamais dans le sandbox.
+    env_file: .env
+    environment:
+      - DISPLAY
+      - GZ_VERSION=harmonic
+    volumes:
+      - ardu_ws:/ardu_ws
+      - ./config:/ardu_ws/config:ro   # sim.parm éditable sur l'hôte, lu au boot du SITL
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/dev/.Xauthority:ro
+    command: sleep infinity
+volumes:
+  ardu_ws:

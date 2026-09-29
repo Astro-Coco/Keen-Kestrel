@@ -1,0 +1,7 @@
+services:
+  sim:
+    gpus: all
+    environment:
+      # "graphics" est obligatoire : sans elle nvidia-container-toolkit n'expose pas
+      # libGL/EGL et Gazebo bascule silencieusement sur le rendu logiciel (llvmpipe).
+      - NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute

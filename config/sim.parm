@@ -1,0 +1,18 @@
+# Paramètres ArduPilot de la sim — édite ce fichier puis relance `make sim`.
+#
+# Ce fichier est le DERNIER de la chaîne --defaults du SITL : il gagne sur les
+# fichiers amont (copter.parm, gazebo-iris-gimbal.parm, dds_udp.parm...).
+# Format : NOM_PARAM valeur (une paire par ligne, # pour commenter).
+#
+# ATTENTION : un param modifié en vol via MAVProxy (`param set ...`) est écrit
+# dans l'eeprom persistant (/ardu_ws/eeprom.bin, dans le volume) et GAGNE sur ce
+# fichier au boot suivant. `make clean-eeprom` pour redonner la main aux defaults.
+#
+# Exemples (décommenter pour activer) :
+#SIM_WIND_SPD    5        # vent constant (m/s)
+#SIM_WIND_DIR    90       # direction du vent (deg)
+#SIM_RC_FAIL     0        # simuler une perte RC (1 = failsafe)
+BATT_CAPACITY   5000     # capacité batterie simulée (mAh)
+#SYSID_THISMAV   1        # system id MAVLink
+#DDS_DOMAIN_ID   0        # domaine DDS des topics /ap (== ROS_DOMAIN_ID du .env)
+#EK3_GPS_CHECK   0        # relâcher les checks GPS (démarrage plus rapide)
